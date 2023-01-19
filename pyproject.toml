@@ -30,10 +30,11 @@ classifiers = [
 ]
 dynamic = ["version"]
 dependencies = [
-  "typing_extensions >=3.7; python_version<'3.8'",
+   "typing_extensions >=3.7; python_version<'3.8'",
    "typer",
    "rich >= 12.0.0",
-   "textual >=0.1.17"
+   "textual >=0.1.17",
+   "itkdb"
 ]
 
 [project.optional-dependencies]
