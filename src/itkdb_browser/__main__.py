@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import typer
 
-import itkdb_browser
+from itkdb_browser import __version__
 
 app = typer.Typer()
 
@@ -18,7 +18,7 @@ def main(
     Manage top-level options
     """
     if version:
-        typer.echo(f"itkdb-browser v{itkdb_browser.__version__}")
+        typer.echo(f"itkdb-browser v{__version__}")
         raise typer.Exit()
 
     import itkdb_browser.tui  # pylint: disable=import-outside-toplevel
