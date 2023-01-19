@@ -23,8 +23,8 @@ def main(
 
     import itkdb_browser.tui  # pylint: disable=import-outside-toplevel
 
-    app = itkdb_browser.tui.MainApp()
-    app.run()
+    browser = itkdb_browser.tui.Browser()
+    browser.run()
 
 
 # for generating documentation using mkdocs-click
