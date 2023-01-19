@@ -4,3 +4,4 @@ extend-select = B902, B903, B904
 per-file-ignores =
     tests/*: T
     noxfile.py: T
+    src/itkdb_browser/__main__.py: B008

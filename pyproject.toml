@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 
@@ -59,7 +59,7 @@ Discussions = "https://github.com/kratsg/itkdb-browser/discussions"
 Changelog = "https://github.com/kratsg/itkdb-browser/releases"
 
 [project.scripts]
-itkdb-browser = "itkdb_browser.cli:app"
+itkdb-browser = "itkdb_browser.__main__:app"
 
 [tool.hatch.version]
 source = "vcs"
