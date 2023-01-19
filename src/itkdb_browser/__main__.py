@@ -20,7 +20,11 @@ def main(
     if version:
         typer.echo(f"itkdb-browser v{itkdb_browser.__version__}")
         raise typer.Exit()
-    typer.echo("Browser goes in here")
+
+    import itkdb_browser.tui  # pylint: disable=import-outside-toplevel
+
+    app = itkdb_browser.tui.MainApp()
+    app.run()
 
 
 # for generating documentation using mkdocs-click
