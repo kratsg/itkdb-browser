@@ -31,6 +31,9 @@ classifiers = [
 dynamic = ["version"]
 dependencies = [
   "typing_extensions >=3.7; python_version<'3.8'",
+   "typer",
+   "rich >= 12.0.0",
+   "textual >=0.1.17"
 ]
 
 [project.optional-dependencies]
@@ -54,13 +57,39 @@ Homepage = "https://github.com/kratsg/itkdb-browser"
 "Bug Tracker" = "https://github.com/kratsg/itkdb-browser/issues"
 Discussions = "https://github.com/kratsg/itkdb-browser/discussions"
 Changelog = "https://github.com/kratsg/itkdb-browser/releases"
-[tool.hatch]
-version.path = "src/itkdb_browser/__init__.py"
-envs.default.dependencies = [
-  "pytest",
-  "pytest-cov",
+
+[project.scripts]
+itkdb-browser = "itkdb_browser.cli:app"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/itkdb_browser/_version.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "pytest-cov",
+    "tbump>=6.7.0",
+    "pylint",
+    "build",
+    "twine",
 ]
 
+[tool.hatch.envs.default.scripts]
+tag = "tbump {args}"
+lint = "pylint src"
+build = "python -m build"
+validate = "twine check dist/*"
+# https://github.com/linkchecker/linkchecker/issues/678
+build-check = [
+  "build",
+  "validate",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
