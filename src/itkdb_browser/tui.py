@@ -58,7 +58,7 @@ class InstitutionDisplay(Static):
 class Browser(App[Any]):
     """A basic implementation of the itkdb-browser TUI"""
 
-    # BINDINGS = [("q", "exit", "Quit"), ("d", "toggle_dark", "Toggle dark mode")]
+    BINDINGS = [("q", "exit", "Quit"), ("d", "toggle_dark", "Toggle dark mode")]
 
     DEFAULT_CSS = """
     Browser > Static {
