@@ -23,15 +23,16 @@ from textual.widgets import (
 
 
 class LoginScreen(Screen):
+    """Screen for logging user in."""
 
-    accessCode1 = reactive(itkdb.settings.ITKDB_ACCESS_CODE1)
-    accessCode2 = reactive(itkdb.settings.ITKDB_ACCESS_CODE2)
+    access_code1 = reactive(itkdb.settings.ITKDB_ACCESS_CODE1)
+    access_code2 = reactive(itkdb.settings.ITKDB_ACCESS_CODE2)
 
     def login(self) -> None:
         """Called to perform login."""
         try:
             user = itkdb.core.User(
-                accessCode1=self.accessCode1, accessCode2=self.accessCode2
+                accessCode1=self.access_code1, accessCode2=self.access_code2
             )
             user.authenticate()
             self.app.client = itkdb.Client(user=user)  # type: ignore[attr-defined]
@@ -48,11 +49,12 @@ class LoginScreen(Screen):
             event.stop()
 
     def on_input_changed(self, event: Input.Changed) -> None:
+        """When someone types in the input."""
         if event.input.id == "accessCode1":
-            self.accessCode1 = event.value
+            self.access_code1 = event.value
             event.stop()
         elif event.input.id == "accessCode2":
-            self.accessCode2 = event.value
+            self.access_code2 = event.value
             event.stop()
         else:
             pass
@@ -64,9 +66,9 @@ class LoginScreen(Screen):
             Horizontal(
                 Static("Access Code 1", classes="labels"),
                 Input(
-                    self.accessCode1,
+                    self.access_code1,
                     placeholder="code",
-                    id="accessCode1",
+                    id="access_code1",
                     classes="access_codes",
                 ),
                 classes="input_row",
@@ -74,9 +76,9 @@ class LoginScreen(Screen):
             Horizontal(
                 Static("Access Code 2", classes="labels"),
                 Input(
-                    self.accessCode2,
+                    self.access_code2,
                     placeholder="code",
-                    id="accessCode2",
+                    id="access_code2",
                     classes="access_codes",
                 ),
                 classes="input_row",
@@ -101,6 +103,7 @@ class InstitutionList(ListView):
     """A widget to display a list of institutions."""
 
     def load_institutions(self) -> None:
+        """Load up the institutions in the list view."""
         self.clear()
         institutions = self.app.client.get("listInstitutions")  # type: ignore[attr-defined]
         for institution in sorted(
