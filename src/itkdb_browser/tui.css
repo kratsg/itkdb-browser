@@ -1,0 +1,58 @@
+Browser > Static {
+  content-align: center middle;
+  background: crimson;
+  border: solid darkred;
+  height: 1fr;
+}
+
+.column {
+  width: 1fr;
+}
+
+LoginScreen {
+  align: center middle;
+}
+
+LoginScreen #dialog {
+  width: 0.8fr;
+  height: auto;
+  background: $panel;
+  color: $text;
+  border: tall $background;
+  padding: 1 2;
+  align: center middle;
+}
+
+LoginScreen .input_row {
+  width: 1fr;
+  height: auto;
+  margin: 1 0;
+}
+
+LoginScreen .labels {
+  width: 0.2fr;
+  text-style: bold;
+  height: 100%;
+  content-align: center middle;
+}
+
+LoginScreen .access_codes {
+  width: 0.8fr;
+}
+
+LoginScreen #login {
+  width: 1fr;
+  text-align: center;
+}
+
+LoginScreen #textlog {
+  height: 40%;
+  margin: 2 1 1 1;
+  padding-top: 1;
+  border-top: tall grey;
+  dock: bottom;
+}
+
+LoginScreen TextLog {
+  color: $text;
+}
