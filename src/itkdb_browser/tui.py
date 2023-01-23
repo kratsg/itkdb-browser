@@ -50,10 +50,10 @@ class LoginScreen(Screen):
 
     def on_input_changed(self, event: Input.Changed) -> None:
         """When someone types in the input."""
-        if event.input.id == "accessCode1":
+        if event.input.id == "access_code1":
             self.access_code1 = event.value
             event.stop()
-        elif event.input.id == "accessCode2":
+        elif event.input.id == "access_code1":
             self.access_code2 = event.value
             event.stop()
         else:
