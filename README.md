@@ -26,3 +26,26 @@
 [rtd-link]:                 https://itkdb-browser.readthedocs.io/en/latest/?badge=latest
 
 <!-- prettier-ignore-end -->
+
+## Install me
+
+```
+python -m pip install itkdb-browser
+```
+
+## Run me
+
+```
+itkdb-browser
+```
+
+or
+
+```
+python -m itkdb_browser
+```
+
+The login screen will pick up the same variables that [itkdb][itkdb-link] picks
+up.
+
+[itkdb-link]: https://pypi.org/project/itkdb/
