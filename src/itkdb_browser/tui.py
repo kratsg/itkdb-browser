@@ -25,8 +25,8 @@ from textual.widgets import (
 class LoginScreen(Screen):
     """Screen for logging user in."""
 
-    access_code1 = reactive(itkdb.settings.ITKDB_ACCESS_CODE1)
-    access_code2 = reactive(itkdb.settings.ITKDB_ACCESS_CODE2)
+    access_code1 = itkdb.settings.ITKDB_ACCESS_CODE1
+    access_code2 = itkdb.settings.ITKDB_ACCESS_CODE2
 
     def login(self) -> None:
         """Called to perform login."""
@@ -53,7 +53,7 @@ class LoginScreen(Screen):
         if event.input.id == "access_code1":
             self.access_code1 = event.value
             event.stop()
-        elif event.input.id == "access_code1":
+        elif event.input.id == "access_code2":
             self.access_code2 = event.value
             event.stop()
         else:
