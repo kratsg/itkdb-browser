@@ -66,9 +66,11 @@ MainScreen {
 MainScreen UserDetails {
   border: solid white;
   padding: 0 0 0 2;
+  background: $panel;
 }
 
 MainScreen UserInstitutionDetails {
   border: solid red;
   padding: 0 0 0 2;
+  background: $panel;
 }
