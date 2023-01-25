@@ -11,6 +11,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.reactive import reactive
 from textual.screen import Screen
+from textual.timer import Timer
 from textual.widgets import (
     Button,
     Footer,
@@ -25,12 +26,16 @@ from textual.widgets import (
 
 
 class IntervalUpdater(Static):
+    """Interval updater for rendering animating renderables."""
+
     _renderable_object: RenderableType
 
     def __init__(self, renderable_object: RenderableType) -> None:
         super().__init__(renderable_object)
+        self.interval_update: Timer | None = None
 
     def on_mount(self) -> None:
+        """Start updating the interval once the widget is mounted."""
         self.interval_update = self.set_interval(1 / 60, self.refresh)
 
 
@@ -114,6 +119,7 @@ class UserDetails(Static):
     """Widget for displaying user information."""
 
     def on_mount(self) -> None:
+        """Generate static block of text for user details when mounted."""
         email = self.app.user["email"]
         text = f"""[b]{self.app.user['firstName']} {self.app.user['lastName']}[/b] [link=mailto:{email} lightblue]({email})[/link]
 [b]Identity:[/b] {self.app.client.user.identity}"""
@@ -152,6 +158,7 @@ class UserInstitutionDetails(Static):
         return ":white_check_mark:" if value else ":cross_mark:"
 
     def on_mount(self) -> None:
+        """Generate static block of text for user institution details when mounted."""
         text = f"[b]{self._name} [gray]({self._code})[/gray][/b]"
         text += "\n[u yellow]Roles:[/u yellow]"
         for role, value in self._roles.items():
@@ -240,7 +247,9 @@ class Browser(App[Any]):
 
     def __init__(self) -> None:
         super().__init__()
+        self.dark = True
         self.client = None
+        self.user = None
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
