@@ -61,6 +61,7 @@ MainScreen {
   layout: grid;
   grid-size: 3;
   grid-rows: 14;
+  grid-gutter: 1;
 }
 
 MainScreen UserDetails {
