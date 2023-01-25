@@ -117,6 +117,9 @@ warn_unreachable = true
 module = ["itkdb.*"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "itkdb_browser.tui"
+disable_error_code = ["attr-defined"]
 
 [tool.isort]
 profile = "black"
