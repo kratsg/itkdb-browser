@@ -170,9 +170,9 @@ class UserInstitutionDetails(Static):
 
 
 class Navigation(Horizontal):
-    def __init__(
-        self, name: str | None = None, id: str | None = None, classes: str | None = None
-    ):
+    """Display a bunch of buttons for app navigation."""
+
+    def __init__(self, classes: str | None = None):
         children = []
         current_screen = self.app.screen
         for screen in self.app._installed_screens.values():
@@ -186,9 +186,10 @@ class Navigation(Horizontal):
                         disabled=is_current_screen,
                     )
                 )
-        super().__init__(*children, id=id, classes=classes)
+        super().__init__(*children, classes=classes)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """When a button is clicked, switch screen based on the screen.name stored in the button id."""
         if event.button.id:
             self.app.switch_screen(event.button.id)
 
