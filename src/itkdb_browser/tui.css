@@ -9,6 +9,12 @@ Browser > Static {
   width: 1fr;
 }
 
+Navigation {
+  dock: bottom;
+  margin-bottom: 1;
+  height: auto;
+}
+
 LoginScreen {
   align: center middle;
 }

@@ -169,11 +169,36 @@ class UserInstitutionDetails(Static):
         self.update(text)
 
 
+class Navigation(Horizontal):
+    def __init__(
+        self, name: str | None = None, id: str | None = None, classes: str | None = None
+    ):
+        children = []
+        current_screen = self.app.screen
+        for screen in self.app._installed_screens.values():
+            is_current_screen = screen == current_screen
+            if isinstance(screen, Screen) and screen.name:
+                children.append(
+                    Button(
+                        screen.name.title(),
+                        variant="primary" if is_current_screen else "default",
+                        id=screen.name,
+                        disabled=is_current_screen,
+                    )
+                )
+        super().__init__(*children, id=id, classes=classes)
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id:
+            self.app.switch_screen(event.button.id)
+
+
 class MainScreen(Screen):
     """Screen for displaying user information."""
 
     def compose(self) -> ComposeResult:
         yield Header()
+        yield Navigation()
         yield Footer()
         yield UserDetails()
         for institution in self.app.user["institutions"]:
@@ -193,15 +218,19 @@ class InstitutionItem(ListItem):
 class InstitutionList(ListView):
     """A widget to display a list of institutions."""
 
-    def load_institutions(self) -> None:
+    _loaded = False
+
+    def on_mount(self) -> None:
         """Load up the institutions in the list view."""
-        self.clear()
-        institutions = self.app.client.get("listInstitutions")
-        for institution in sorted(
-            list(institutions),
-            key=itemgetter("name"),
-        ):
-            self.append(InstitutionItem(institution))
+        if not self._loaded:
+            self.clear()
+            institutions = self.app.client.get("listInstitutions")
+            for institution in sorted(
+                list(institutions),
+                key=itemgetter("name"),
+            ):
+                self.append(InstitutionItem(institution))
+        self._loaded = True
 
 
 class InstitutionDisplay(Static):
@@ -225,6 +254,7 @@ class InstitutionScreen(Screen):
 
     def compose(self) -> ComposeResult:
         yield Header()
+        yield Navigation()
         yield Footer()
         yield Horizontal(
             InstitutionList(classes="column"),
@@ -237,10 +267,12 @@ class Browser(App[Any]):
 
     BINDINGS = [("q", "exit", "Quit"), ("d", "toggle_dark", "Toggle dark mode")]
 
+    # If no name, screen hidden from navigation
+    # Order of screens listed is order displayed in navigation
     SCREENS = {
         "login": LoginScreen(),
-        "main": MainScreen(),
-        "institution": InstitutionScreen(),
+        "main": MainScreen(name="main"),
+        "institution": InstitutionScreen(name="institution"),
     }
 
     CSS_PATH = "tui.css"
