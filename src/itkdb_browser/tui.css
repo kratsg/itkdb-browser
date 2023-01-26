@@ -95,8 +95,16 @@ StageReorderScreen #stages Horizontal {
   layout: grid;
   grid-size: 2 1;
   grid-gutter: 1;
+  height: 3;
 }
 
 StageReorderScreen #stages Button {
   width: 100%;
+}
+
+StageReorderScreen TextLog {
+  height: 1fr;
+  width: 1fr;
+  color: $text;
+  border: solid grey;
 }

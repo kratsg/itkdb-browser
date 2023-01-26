@@ -7,6 +7,7 @@ import itkdb
 from rich.console import RenderableType
 from rich.pretty import Pretty
 from rich.progress import BarColumn, Progress
+from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.reactive import reactive
@@ -298,13 +299,19 @@ class StagesListView(DraggableListView):
 
     component_type: reactive[dict[str, Any]] = reactive({})
 
-    def watch_component_type(self) -> None:
-        """Called when the component_type attribute changes."""
+    def build_list(self) -> None:
+        """Build the list of stages from component type details."""
         self.clear()
         for stage in sorted(
             self.component_type.get("stages", []) or [], key=itemgetter("order")
         ):
-            self.append(DraggableListItem(stage["name"]))
+            item = DraggableListItem(stage["name"])
+            item.value = stage
+            self.append(item)
+
+    def watch_component_type(self) -> None:
+        """Called when the component_type attribute changes."""
+        self.build_list()
 
 
 class StageReorderScreen(Screen):
@@ -316,6 +323,51 @@ class StageReorderScreen(Screen):
             self.query_one("StagesListView").component_type = getattr(
                 message.item, "value", {}
             )
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Event handler called when  button is pressed."""
+        button_id = event.button.id
+        stages_lv = self.query_one("StagesListView")
+        textlog = self.query_one("TextLog")
+        textlog.clear()
+        if button_id == "reset":
+            stages_lv.build_list()
+        elif button_id == "save":
+            component_type = stages_lv.component_type
+            new_stages = []
+            for new_order, child in enumerate(stages_lv.children, start=1):
+                stage = child.value
+                if stage["order"] != new_order:
+                    try:
+                        self.app.client.post(
+                            "updateComponentTypeStage",
+                            json=dict(
+                                id=component_type["id"],
+                                code=stage["code"],
+                                name=stage["name"],
+                                order=stage["order"],
+                            ),
+                        )
+                        textlog.write(
+                            Text.from_markup(
+                                f":white_check_mark: {stage['name']}: {stage['order']} :arrow_forward: {new_order}"
+                            )
+                        )
+                        stage["order"] = new_order
+                    except itkdb.exceptions.ResponseException as exc:
+                        self.app.bell()
+                        textlog.write(
+                            Text.from_markup(
+                                f":cross_mark: {stage['name']}: {stage['order']} :arrow_forward: {new_order}"
+                            )
+                        )
+                        textlog.write(Text.from_markup(f"[red]{exc}[/red]"))
+                new_stages.append(stage)
+
+            # update stages
+            component_type["stages"] = new_stages
+
+        event.stop()
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -331,8 +383,9 @@ class StageReorderScreen(Screen):
                 StagesListView(),
                 Horizontal(
                     Button("Save", variant="success", id="save"),
-                    Button("Reset", variant="error", id="error"),
+                    Button("Reset", variant="error", id="reset"),
                 ),
+                TextLog(),
                 id="stages",
                 classes="column",
             ),
