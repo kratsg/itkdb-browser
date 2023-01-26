@@ -20,6 +20,17 @@ Navigation Button {
   width: 1fr;
 }
 
+Projects {
+  height: 7;
+  layout: grid;
+  grid-size: 2;
+  grid-gutter: 1 2;
+}
+
+Projects Button {
+  width: 100%;
+}
+
 LoginScreen {
   align: center middle;
 }
@@ -107,4 +118,10 @@ StageReorderScreen TextLog {
   width: 1fr;
   color: $text;
   border: solid grey;
+}
+
+StageReorderScreen .title {
+  color: $text;
+  background: $panel;
+  text-align: center;
 }

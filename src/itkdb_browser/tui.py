@@ -172,6 +172,22 @@ class UserInstitutionDetails(Static):
         self.update(text)
 
 
+class Projects(Horizontal):
+    """Display a bunch of buttons for projects."""
+
+    project = reactive("P", layout=True)
+
+    def compose(self) -> ComposeResult:
+        for project in self.app.projects:
+            is_current_project = project["code"] == self.project
+            yield Button(
+                project["name"],
+                variant="primary" if is_current_project else "default",
+                id=project["code"],
+                disabled=is_current_project,
+            )
+
+
 class Navigation(Horizontal):
     """Display a bunch of buttons for app navigation."""
 
@@ -373,13 +389,19 @@ class StageReorderScreen(Screen):
         yield Header()
         yield Navigation()
         yield Footer()
-        ctype_list = ComponentTypeList(classes="column", id="component_type_list")
+        ctype_list = ComponentTypeList(id="component_type_list")
         ctype_list.project = self.app.user.get("preferences", {}).get(
             "defaultProject", "P"
         )
         yield Horizontal(
-            ctype_list,
+            Vertical(Projects(), ctype_list, classes="column"),
             Vertical(
+                Static(
+                    Text.from_markup(
+                        "Drag and drop stages to reorder. :pinching_hand: (:down_arrow:,:up_arrow: ) :hand:"
+                    ),
+                    classes="title",
+                ),
                 StagesListView(),
                 Horizontal(
                     Button("Save", variant="success", id="save"),
@@ -412,7 +434,8 @@ class Browser(App[Any]):
         super().__init__()
         self.dark = True
         self.client = None
-        self.user = None
+        self.user: dict[str, Any] = {}
+        self.projects: list[dict[str, Any]] = []
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode."""
@@ -427,6 +450,7 @@ class Browser(App[Any]):
         self.user = self.client.get(
             "getUser", json=dict(userIdentity=self.client.user.identity)
         )
+        self.projects = list(self.client.get("listProjects"))
         self.pop_screen()
         self.push_screen("main")
 
