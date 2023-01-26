@@ -15,6 +15,11 @@ Navigation {
   height: auto;
 }
 
+Navigation Button {
+  margin-right: 2;
+  width: 1fr;
+}
+
 LoginScreen {
   align: center middle;
 }
@@ -80,4 +85,18 @@ MainScreen UserInstitutionDetails {
   border: solid red;
   padding: 0 0 0 2;
   background: $panel;
+}
+
+StagesListView {
+  height: 50%;
+}
+
+StageReorderScreen #stages Horizontal {
+  layout: grid;
+  grid-size: 2 1;
+  grid-gutter: 1;
+}
+
+StageReorderScreen #stages Button {
+  width: 100%;
 }

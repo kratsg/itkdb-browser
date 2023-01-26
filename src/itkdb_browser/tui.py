@@ -24,6 +24,8 @@ from textual.widgets import (
     TextLog,
 )
 
+from itkdb_browser.draggable_list_view import DraggableListItem, DraggableListView
+
 
 class IntervalUpdater(Static):
     """Interval updater for rendering animating renderables."""
@@ -180,7 +182,7 @@ class Navigation(Horizontal):
             if isinstance(screen, Screen) and screen.name:
                 children.append(
                     Button(
-                        screen.name.title(),
+                        screen.name.replace("_", " ").title(),
                         variant="primary" if is_current_screen else "default",
                         id=screen.name,
                         disabled=is_current_screen,
@@ -206,14 +208,12 @@ class MainScreen(Screen):
             yield UserInstitutionDetails(institution)
 
 
-class InstitutionItem(ListItem):
-    """An Institution ListItem."""
+class ListItemByName(ListItem):
+    """An ListItem using provided dictionary 'name' key as the display, storing value on itself."""
 
-    __slots__ = ("value",)
-
-    def __init__(self, institution: dict[str, Any]):
-        super().__init__(Label(institution["name"]))
-        self.value = institution
+    def __init__(self, item: dict[str, Any]):
+        super().__init__(Label(item["name"]))
+        self.value = item
 
 
 class InstitutionList(ListView):
@@ -230,7 +230,7 @@ class InstitutionList(ListView):
                 list(institutions),
                 key=itemgetter("name"),
             ):
-                self.append(InstitutionItem(institution))
+                self.append(ListItemByName(institution))
         self._loaded = True
 
 
@@ -263,6 +263,80 @@ class InstitutionScreen(Screen):
         )
 
 
+class ComponentTypeList(ListView):
+    """A widget to display a list of component types."""
+
+    project = reactive("P", layout=True)
+    _component_types: dict[str, list[dict[str, Any]]] = {}
+
+    def get_component_types(self) -> list[dict[str, Any]]:
+        if not self._component_types.get(self.project):
+            self._component_types[self.project] = sorted(
+                list(
+                    self.app.client.get(
+                        "listComponentTypes", json=dict(project=self.project)
+                    )
+                ),
+                key=itemgetter("name"),
+            )
+        return self._component_types[self.project]
+
+    def watch_project(self, old_project: str, new_project: str) -> None:
+        if old_project != new_project:
+            self.clear()
+            self.on_mount()
+
+    def on_mount(self) -> None:
+        for component_type in self.get_component_types():
+            self.append(ListItemByName(component_type))
+
+
+class StagesListView(DraggableListView):
+    """A widget to display stages for a component type."""
+
+    component_type: reactive[dict[str, Any]] = reactive({})
+
+    def watch_component_type(self) -> None:
+        """Called when the component_type attribute changes."""
+        self.clear()
+        for stage in sorted(
+            self.component_type.get("stages", []) or [], key=itemgetter("order")
+        ):
+            self.append(DraggableListItem(stage["name"]))
+
+
+class StageReorderScreen(Screen):
+    """Screen for reordering stages on a component type."""
+
+    def on_list_view_selected(self, message: ListView.Selected) -> None:
+        """When component_type has been chosen."""
+        if message.sender.id == "component_type_list":
+            self.query_one("StagesListView").component_type = getattr(
+                message.item, "value", {}
+            )
+
+    def compose(self) -> ComposeResult:
+        yield Header()
+        yield Navigation()
+        yield Footer()
+        ctypeList = ComponentTypeList(classes="column", id="component_type_list")
+        ctypeList.project = self.app.user.get("preferences", {}).get(
+            "defaultProject", "P"
+        )
+        yield Horizontal(
+            ctypeList,
+            Vertical(
+                StagesListView(),
+                Horizontal(
+                    Button("Save", variant="success", id="save"),
+                    Button("Reset", variant="error", id="error"),
+                ),
+                id="stages",
+                classes="column",
+            ),
+        )
+
+
 class Browser(App[Any]):
     """A basic implementation of the itkdb-browser TUI"""
 
@@ -273,7 +347,8 @@ class Browser(App[Any]):
     SCREENS = {
         "login": LoginScreen(),
         "main": MainScreen(name="main"),
-        "institution": InstitutionScreen(name="institution"),
+        "list_institutions": InstitutionScreen(name="list_institutions"),
+        "reorder_stages": StageReorderScreen(name="reorder_stages"),
     }
 
     CSS_PATH = "tui.css"
@@ -281,7 +356,6 @@ class Browser(App[Any]):
     def __init__(self) -> None:
         super().__init__()
         self.dark = True
-        self.client = None
         self.user = None
 
     def action_toggle_dark(self) -> None:
