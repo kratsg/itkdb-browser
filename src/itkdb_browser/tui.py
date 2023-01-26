@@ -358,6 +358,7 @@ class Browser(App[Any]):
     def __init__(self) -> None:
         super().__init__()
         self.dark = True
+        self.client = None
         self.user = None
 
     def action_toggle_dark(self) -> None:
