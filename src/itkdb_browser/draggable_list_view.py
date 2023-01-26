@@ -92,8 +92,8 @@ class DraggableListView(ListView):
         index_sender = self.children.index(message.sender)
         new_index = self._clamp_index(index_sender + message.mouse_event.y)
 
-        self.children._remove(message.sender)  # type: ignore[arg-type]
-        self.children._insert(new_index, message.sender)  # type: ignore[arg-type]
+        self.children._remove(message.sender)  # type: ignore[arg-type] # pylint: disable=protected-access
+        self.children._insert(new_index, message.sender)  # type: ignore[arg-type] # pylint: disable=protected-access
         self.index = new_index
 
         # Request a refresh.

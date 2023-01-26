@@ -270,6 +270,7 @@ class ComponentTypeList(ListView):
     _component_types: dict[str, list[dict[str, Any]]] = {}
 
     def get_component_types(self) -> list[dict[str, Any]]:
+        """Get the list of component types."""
         if not self._component_types.get(self.project):
             self._component_types[self.project] = sorted(
                 list(
@@ -282,6 +283,7 @@ class ComponentTypeList(ListView):
         return self._component_types[self.project]
 
     def watch_project(self, old_project: str, new_project: str) -> None:
+        """Update list of component types to correspond with the project."""
         if old_project != new_project:
             self.clear()
             self.on_mount()
@@ -319,12 +321,12 @@ class StageReorderScreen(Screen):
         yield Header()
         yield Navigation()
         yield Footer()
-        ctypeList = ComponentTypeList(classes="column", id="component_type_list")
-        ctypeList.project = self.app.user.get("preferences", {}).get(
+        ctype_list = ComponentTypeList(classes="column", id="component_type_list")
+        ctype_list.project = self.app.user.get("preferences", {}).get(
             "defaultProject", "P"
         )
         yield Horizontal(
-            ctypeList,
+            ctype_list,
             Vertical(
                 StagesListView(),
                 Horizontal(
