@@ -184,7 +184,7 @@ class Projects(Horizontal):
                 project["name"],
                 variant="primary" if is_current_project else "default",
                 id=project["code"],
-                disabled=is_current_project,
+                disabled=is_current_project or True,
             )
 
 
