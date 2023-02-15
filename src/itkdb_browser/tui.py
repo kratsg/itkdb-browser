@@ -294,7 +294,7 @@ class ComponentTypeList(ListView):
             self._component_types[self.project] = sorted(
                 list(
                     self.app.client.get(
-                        "listComponentTypes", json=dict(project=self.project)
+                        "listComponentTypes", json={"project": self.project}
                     )
                 ),
                 key=itemgetter("name"),
@@ -359,12 +359,12 @@ class StageReorderScreen(Screen):
                     try:
                         self.app.client.post(
                             "updateComponentTypeStage",
-                            json=dict(
-                                id=component_type["id"],
-                                code=stage["code"],
-                                name=stage["name"],
-                                order=stage["order"],
-                            ),
+                            json={
+                                "id": component_type["id"],
+                                "code": stage["code"],
+                                "name": stage["name"],
+                                "order": stage["order"],
+                            },
                         )
                         textlog.write(
                             Text.from_markup(
@@ -450,7 +450,7 @@ class Browser(App[Any]):
     def login(self) -> None:
         """Called when the LoginScreen has logged in."""
         self.user = self.client.get(
-            "getUser", json=dict(userIdentity=self.client.user.identity)
+            "getUser", json={"userIdentity": self.client.user.identity}
         )
         self.projects = list(self.client.get("listProjects"))
         self.pop_screen()
