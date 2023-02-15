@@ -51,7 +51,7 @@ class DraggableListItem(ListItem, can_focus=False):
             return
         self.mouse_down = False
         if self.is_dragging:
-            self.emit_no_wait(self.DragStop(self, event))
+            self.post_message_no_wait(self.DragStop(self, event))
             self.is_dragging = False
         self.capture_mouse(capture=False)
 
@@ -59,10 +59,10 @@ class DraggableListItem(ListItem, can_focus=False):
         """When the mouse moves."""
         if self.mouse_down and (event.delta_x != 0 or event.delta_y != 0):
             if not self.is_dragging:
-                self.emit_no_wait(self.DragStart(self, event))
+                self.post_message_no_wait(self.DragStart(self, event))
                 self.is_dragging = True
             else:
-                self.emit_no_wait(self.DragMove(self, event))
+                self.post_message_no_wait(self.DragMove(self, event))
 
 
 class DraggableListView(ListView):

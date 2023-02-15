@@ -97,6 +97,7 @@ class LoginScreen(Screen):
                 Input(
                     self.access_code1,
                     placeholder="code",
+                    password=True,
                     id="access_code1",
                     classes="access_codes",
                 ),
@@ -107,6 +108,7 @@ class LoginScreen(Screen):
                 Input(
                     self.access_code2,
                     placeholder="code",
+                    password=True,
                     id="access_code2",
                     classes="access_codes",
                 ),
