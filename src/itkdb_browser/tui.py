@@ -364,6 +364,7 @@ class StageReorderScreen(Screen):
                                 "code": stage["code"],
                                 "name": stage["name"],
                                 "order": stage["order"],
+                                "testTypes": stage["testTypes"],
                             },
                         )
                         textlog.write(
