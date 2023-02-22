@@ -356,35 +356,45 @@ class StageReorderScreen(Screen):
             for new_order, child in enumerate(stages_lv.children, start=1):
                 stage = child.value
                 if stage["order"] != new_order:
-                    try:
-                        self.app.client.post(
-                            "updateComponentTypeStage",
-                            json={
-                                "id": component_type["id"],
-                                "code": stage["code"],
-                                "name": stage["name"],
-                                "order": stage["order"],
-                                "testTypes": stage["testTypes"],
-                            },
+                    textlog.write(
+                        Text.from_markup(
+                            f":white_check_mark: {stage['name']}: {stage['order']} :arrow_forward: {new_order}"
                         )
-                        textlog.write(
-                            Text.from_markup(
-                                f":white_check_mark: {stage['name']}: {stage['order']} :arrow_forward: {new_order}"
-                            )
-                        )
-                        stage["order"] = new_order
-                    except itkdb.exceptions.ResponseException as exc:
-                        self.app.bell()
-                        textlog.write(
-                            Text.from_markup(
-                                f":cross_mark: {stage['name']}: {stage['order']} :arrow_forward: {new_order}"
-                            )
-                        )
-                        textlog.write(Text.from_markup(f"[red]{exc}[/red]"))
-                new_stages.append(stage)
+                    )
+                else:
+                    textlog.write(
+                        Text.from_markup(f"   {stage['name']}: {stage['order']}")
+                    )
 
-            # update stages
+                new_stages.append(
+                    {
+                        "code": stage["code"],
+                        "name": stage["name"],
+                        "order": new_order,
+                        "testTypes": stage["testTypes"],
+                    }
+                )
+
+            new_ctype = {
+                "id": component_type["id"],
+                "code": component_type["code"],
+                "project": component_type["project"]["code"],
+                "stages": new_stages,
+            }
+            try:
+                self.app.client.post("updateComponentType", json=new_ctype)
+            except itkdb.exceptions.ResponseException as exc:
+                self.app.bell()
+                textlog.write(
+                    Text.from_markup(
+                        f":cross_mark: Updating component type {component_type['code']} failed."
+                    )
+                )
+                textlog.write(Text.from_markup(f"[red]{exc}[/red]"))
+
+            # update stages locally
             component_type["stages"] = new_stages
+            stages_lv.build_list()
 
         event.stop()
 
