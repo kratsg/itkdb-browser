@@ -3,7 +3,6 @@ from __future__ import annotations
 from rich.console import RenderableType
 from rich.text import Text
 from textual import events
-from textual._types import MessageTarget
 from textual.message import Message
 from textual.widgets import Label, ListItem, ListView
 
@@ -21,9 +20,9 @@ class DraggableListItem(ListItem, can_focus=False):
     class DragMessage(Message):
         """Sent for any drag-related events."""
 
-        def __init__(self, sender: MessageTarget, mouse_event: events.MouseEvent):
+        def __init__(self, mouse_event: events.MouseEvent):
             self.mouse_event = mouse_event
-            super().__init__(sender)
+            super().__init__()
 
     class DragStart(DragMessage):
         """Sent when the mouse starts dragging."""
@@ -51,7 +50,7 @@ class DraggableListItem(ListItem, can_focus=False):
             return
         self.mouse_down = False
         if self.is_dragging:
-            self.post_message_no_wait(self.DragStop(self, event))
+            self.post_message(self.DragStop(event))
             self.is_dragging = False
         self.capture_mouse(capture=False)
 
@@ -59,10 +58,10 @@ class DraggableListItem(ListItem, can_focus=False):
         """When the mouse moves."""
         if self.mouse_down and (event.delta_x != 0 or event.delta_y != 0):
             if not self.is_dragging:
-                self.post_message_no_wait(self.DragStart(self, event))
+                self.post_message(self.DragStart(event))
                 self.is_dragging = True
             else:
-                self.post_message_no_wait(self.DragMove(self, event))
+                self.post_message(self.DragMove(event))
 
 
 class DraggableListView(ListView):
