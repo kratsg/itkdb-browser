@@ -61,7 +61,7 @@ class LoginScreen(Screen):
         """Called to perform login."""
         try:
             user = itkdb.core.User(
-                accessCode1=self.access_code1, accessCode2=self.access_code2
+                access_code1=self.access_code1, access_code2=self.access_code2
             )
             user.authenticate()
             self.app.client = itkdb.Client(user=user)
