@@ -64,6 +64,7 @@ class LoginScreen(Screen):
                 access_code1=self.access_code1, access_code2=self.access_code2
             )
             user.authenticate()
+            # pylint: disable-next=attribute-defined-outside-init
             self.app.client = itkdb.Client(user=user)
             self.app.login()
         except itkdb.exceptions.ResponseException as exc:
