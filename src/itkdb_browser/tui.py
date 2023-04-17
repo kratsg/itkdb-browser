@@ -4,15 +4,12 @@ from operator import itemgetter
 from typing import Any
 
 import itkdb
-from rich.console import RenderableType
 from rich.pretty import Pretty
-from rich.progress import BarColumn, Progress
 from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.reactive import reactive
 from textual.screen import Screen
-from textual.timer import Timer
 from textual.widgets import (
     Button,
     Footer,
@@ -26,29 +23,6 @@ from textual.widgets import (
 )
 
 from itkdb_browser.draggable_list_view import DraggableListItem, DraggableListView
-
-
-class IntervalUpdater(Static):
-    """Interval updater for rendering animating renderables."""
-
-    _renderable_object: RenderableType
-
-    def __init__(self, renderable_object: RenderableType) -> None:
-        super().__init__(renderable_object)
-        self.interval_update: Timer | None = None
-
-    def on_mount(self) -> None:
-        """Start updating the interval once the widget is mounted."""
-        self.interval_update = self.set_interval(1 / 60, self.refresh)
-
-
-class IndeterminateProgressBar(IntervalUpdater):
-    """Basic indeterminate progress bar widget based on rich.progress.Progress."""
-
-    def __init__(self) -> None:
-        self._renderable_object = Progress(BarColumn(bar_width=None))
-        self._renderable_object.add_task("", total=None)
-        super().__init__(self._renderable_object)
 
 
 class LoginScreen(Screen):
