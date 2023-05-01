@@ -283,6 +283,9 @@ class ComponentTypeList(ListView):
             self.on_mount()
 
     def on_mount(self) -> None:
+        """
+        Generate the list of component types on mount.
+        """
         for component_type in self.get_component_types():
             self.append(ListItemByName(component_type))
 
