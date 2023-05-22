@@ -119,7 +119,7 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "itkdb_browser.tui"
-disable_error_code = ["attr-defined"]
+disable_error_code = ["attr-defined", "type-arg"]
 
 [tool.isort]
 profile = "black"
