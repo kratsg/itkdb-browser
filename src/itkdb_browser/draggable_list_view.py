@@ -3,7 +3,7 @@ from __future__ import annotations
 from rich.console import RenderableType
 from rich.text import Text
 from textual import events
-from textual.message import Message, MessageTarget
+from textual.message import Message, MessageTarget  # type: ignore[attr-defined]
 from textual.widgets import Label, ListItem, ListView
 
 
