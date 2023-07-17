@@ -10,7 +10,7 @@ authors = [
 ]
 description = "TUI browser for ITk Production DB using itkdb"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 1 - Planning",
   "Intended Audience :: Science/Research",
@@ -20,7 +20,6 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -30,7 +29,6 @@ classifiers = [
 ]
 dynamic = ["version"]
 dependencies = [
-   "typing_extensions >=3.7; python_version<'3.8'",
    "typer",
    "rich >= 12.0.0",
    "textual >=0.14.0",
@@ -105,7 +103,7 @@ testpaths = [
 
 [tool.mypy]
 files = "src"
-python_version = "3.7"
+python_version = "3.8"
 warn_unused_configs = true
 strict = true
 show_error_codes = true
@@ -126,7 +124,7 @@ profile = "black"
 
 
 [tool.pylint]
-py-version = "3.7"
+py-version = "3.8"
 ignore-paths= ["src/itkdb_browser/_version.py"]
 reports.output-format = "colorized"
 similarities.ignore-imports = "yes"
