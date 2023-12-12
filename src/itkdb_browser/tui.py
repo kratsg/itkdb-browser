@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from operator import itemgetter
-from typing import Any
+from typing import Any, Callable, ClassVar
 
 import itkdb
 from rich.pretty import Pretty
 from rich.text import Text
 from textual.app import App, ComposeResult
+from textual.binding import BindingType
 from textual.containers import Container, Horizontal, Vertical
 from textual.reactive import reactive
 from textual.screen import Screen
@@ -221,7 +222,7 @@ class InstitutionList(ListView):
             self.clear()
             institutions = self.app.client.get("listInstitutions")
             for institution in sorted(
-                list(institutions),
+                institutions,
                 key=itemgetter("name"),
             ):
                 self.append(ListItemByName(institution))
@@ -261,16 +262,14 @@ class ComponentTypeList(ListView):
     """A widget to display a list of component types."""
 
     project = reactive("P", layout=True)
-    _component_types: dict[str, list[dict[str, Any]]] = {}
+    _component_types: ClassVar[dict[str, list[dict[str, Any]]]] = {}
 
     def get_component_types(self) -> list[dict[str, Any]]:
         """Get the list of component types."""
         if not self._component_types.get(self.project):
             self._component_types[self.project] = sorted(
-                list(
-                    self.app.client.get(
-                        "listComponentTypes", json={"project": self.project}
-                    )
+                self.app.client.get(
+                    "listComponentTypes", json={"project": self.project}
                 ),
                 key=itemgetter("name"),
             )
@@ -408,11 +407,14 @@ class StageReorderScreen(Screen):
 class Browser(App[Any]):
     """A basic implementation of the itkdb-browser TUI"""
 
-    BINDINGS = [("q", "exit", "Quit"), ("d", "toggle_dark", "Toggle dark mode")]
+    BINDINGS: ClassVar[list[BindingType]] = [
+        ("q", "exit", "Quit"),
+        ("d", "toggle_dark", "Toggle dark mode"),
+    ]
 
     # If no name, screen hidden from navigation
     # Order of screens listed is order displayed in navigation
-    SCREENS = {
+    SCREENS: ClassVar[dict[str, Screen | Callable[[], Screen]]] = {
         "login": LoginScreen(),
         "main": MainScreen(name="main"),
         "list_institutions": InstitutionScreen(name="list_institutions"),
