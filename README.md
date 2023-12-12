@@ -1,4 +1,4 @@
-# itkdb-browser v0.1.1
+# itkdb-browser v0.2.0
 
 [![Actions Status][actions-badge]][actions-link]
 [![Documentation Status][rtd-badge]][rtd-link]
