@@ -30,9 +30,9 @@ classifiers = [
 dynamic = ["version"]
 dependencies = [
    "typer",
-   "rich >= 12.0.0",
-   "textual >=0.14.0",
-   "itkdb >= 0.4.0"
+   "rich >= 13.0.0",
+   "textual >=0.40.0",
+   "itkdb >= 0.4.13"
 ]
 
 [project.optional-dependencies]
