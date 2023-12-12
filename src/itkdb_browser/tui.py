@@ -315,7 +315,7 @@ class StageReorderScreen(Screen):
 
     def on_list_view_selected(self, message: ListView.Selected) -> None:
         """When component_type has been chosen."""
-        if message.sender.id == "component_type_list":
+        if message.control.id == "component_type_list":
             self.query_one("StagesListView").component_type = getattr(
                 message.item, "value", {}
             )
