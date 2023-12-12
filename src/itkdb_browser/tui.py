@@ -18,8 +18,8 @@ from textual.widgets import (
     Label,
     ListItem,
     ListView,
+    Log,
     Static,
-    TextLog,
 )
 
 from itkdb_browser.draggable_list_view import DraggableListItem, DraggableListView
@@ -43,7 +43,7 @@ class LoginScreen(Screen):
             self.app.login()
         except itkdb.exceptions.ResponseException as exc:
             self.app.bell()
-            self.query_one("TextLog").write(str(exc))
+            self.query_one("Log").write(str(exc))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Event handler called when login button is pressed."""
@@ -92,7 +92,7 @@ class LoginScreen(Screen):
             Button("Login", id="login", variant="primary"),
             id="dialog",
         )
-        yield Horizontal(TextLog(), id="textlog")
+        yield Horizontal(Log(), id="textlog")
 
 
 class UserDetails(Static):
@@ -324,7 +324,7 @@ class StageReorderScreen(Screen):
         """Event handler called when  button is pressed."""
         button_id = event.button.id
         stages_lv = self.query_one("StagesListView")
-        textlog = self.query_one("TextLog")
+        textlog = self.query_one("Log")
         textlog.clear()
         if button_id == "reset":
             stages_lv.build_list()
@@ -398,7 +398,7 @@ class StageReorderScreen(Screen):
                     Button("Save", variant="success", id="save"),
                     Button("Reset", variant="error", id="reset"),
                 ),
-                TextLog(),
+                Log(),
                 id="stages",
                 classes="column",
             ),

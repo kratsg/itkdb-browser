@@ -75,7 +75,7 @@ LoginScreen #textlog {
   dock: bottom;
 }
 
-LoginScreen TextLog {
+LoginScreen Log {
   color: $text;
 }
 
@@ -113,7 +113,7 @@ StageReorderScreen #stages Button {
   width: 100%;
 }
 
-StageReorderScreen TextLog {
+StageReorderScreen Log {
   height: 1fr;
   width: 1fr;
   color: $text;
